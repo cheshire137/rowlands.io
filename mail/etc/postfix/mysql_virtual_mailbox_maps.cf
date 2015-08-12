@@ -1,0 +1,8 @@
+user = postfixadmin
+password = postfixpassword
+hosts = 127.0.0.1
+dbname = postfixadmin
+table = mailbox
+select_field = maildir
+where_field = username
+#additional_conditions = and active = '1'

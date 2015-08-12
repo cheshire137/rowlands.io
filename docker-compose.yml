@@ -1,0 +1,33 @@
+ovpn_data:
+  image: busybox
+  volumes:
+  - /etc/openvpn
+
+ovpn:
+  image: kylemanna/openvpn
+  volumes_from:
+  -  ovpn_data
+  ports:
+  - "1194:1194/udp"
+  cap_add:
+  - NET_ADMIN
+
+mail_data:
+  image: busybox
+  volumes:
+  - /var/mail
+  - /etc/mail
+
+mail:
+  image: jgrowl/mail
+  volumes_from:
+  - mail_data
+  ports:
+  - "25:25"
+  - "587:587"
+  - "110:110"
+  - "143:143"
+  - "80:80"
+  environment:
+  - MAILNAME=mail.rowlands.io
+  - MYNETWORKS=rowlands.io,mail.rowlands.io,172.0.0.0/8,localhost
