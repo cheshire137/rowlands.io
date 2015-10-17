@@ -1,0 +1,114 @@
+# acl specific for phamm
+
+#  Copyright (c) 2005 Alessandro De Zorzi, Mirko Grava
+#  				<phamm@rhx.it> http://phamm.rhx.it/
+#
+#  Permission is granted to copy, distribute and/or modify this document
+#  under the terms of the GNU Free Documentation License, Version 1.2
+#  or any later version published by the Free Software Foundation;
+#  A copy of the license in DOCS.LICENSE file.
+#
+# account must edit his password, spam level, forward, vacation, his name
+# postmaster with editAccounts=FALSE do the same thing for his domain
+# postmaster with editAccounts=TRUE can add account/alias and edit also amavisBypassVirusChecks, quota and smtpAuth
+# vadmin could do the same as postmaster with editAccounts=TRUE for some domains
+# IMPORTANT
+# this file was tested to be used on Debian Lenny with slapd 2.4.7-5
+# Please remember that the rootdn is {{ LDAP_PHAMM_ROOT_ORG }},{{ LDAP_PHAMM_SUFFIX }}
+#
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=userPassword
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by anonymous auth
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" write
+        by set.expand="user/vd & [$1]" write
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=amavisBypassVirusChecks,quota,smtpAuth,accountActive
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/editAccounts & [TRUE]" write
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/vd & [$1]" write
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=cn,sn,uid,forwardActive,vacationActive,vacationInfo,vacationStart,vacationEnd,vacationForward,amavisSpamTagLevel,amavisSpamTag2Level,amavisSpamKillLevel
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" write
+        by set.expand="user/vd & [$1]" write
+
+access to dn.regex="^.*,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=editAccounts
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read
+        by set.expand="user/editAccounts & [TRUE]" write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by * none
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=objectClass,entry
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by anonymous read
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/editAccounts & [TRUE]" write
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=amavisBypassSpamChecks,accountActive,delete
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" write
+        by set.expand="user/vd & [$1]" write
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=otherPath
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by anonymous read
+        by self read
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by dn.exact,expand="cn=postmaster,vd=$1,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/vd & [$1]" write
+
+access to dn.regex=".+,vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=createMaildir,vdHome,mailbox,otherTransport
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/vd & [$1]" read
+
+access to dn.regex="^(.+,)?vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$" attrs=vd
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by dn.exact,expand="cn=postmaster,vd=$2,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" write
+        by set.expand="user/vd & [$2]" write
+
+access to dn.regex="^(.+,)?vd=([^,]+),o=hosting,{{ LDAP_PHAMM_SUFFIX }}$"
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by set.expand="user/editAccounts & [FALSE]" read
+        by dn.exact,expand="cn=postmaster,vd=$2,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" write
+        by set.expand="user/vd & [$2]" write
+
+access to dn.regex=".+,o=hosting,{{ LDAP_PHAMM_SUFFIX }}$"
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by anonymous auth
+	
+access to dn.regex=".+,dc={{ LDAP_PHAMM_TLD }}$"
+        by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by dn.exact="cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}" read
+        by anonymous auth
+		
+access to dn.regex=".+,{{ LDAP_PHAMM_ROOT_ORG }},{{ LDAP_PHAMM_SUFFIX }}$" attrs=userPassword
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self write
+        by anonymous auth
+
+access to dn.regex=".+,{{ LDAP_PHAMM_ROOT_ORG }},{{ LDAP_PHAMM_SUFFIX }}$" attrs=vd
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read
+
+access to dn.regex="{{ LDAP_PHAMM_ROOT_ORG }},{{ LDAP_PHAMM_SUFFIX }}$"
+	by dn="{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}" write
+        by self read

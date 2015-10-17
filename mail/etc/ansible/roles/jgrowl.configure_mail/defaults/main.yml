@@ -1,0 +1,115 @@
+---
+# defaults file for jgrowl.configure_mail
+
+#POSTFIX_LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
+#POSTFIX_LDAP_ROOTPW: secret
+
+POSTFIX_LDAP_DOMAIN: my-domain
+POSTFIX_LDAP_TLD: com
+POSTFIX_LDAP_ROOT_NAME: admin
+POSTFIX_LDAP_ROOT_SUFFIX: cn={{ POSTFIX_LDAP_ROOT_NAME }}
+POSTFIX_LDAP_ROOT_PW: secret
+
+#POSTFIX_LDAP_HOST: localhost
+POSTFIX_LDAP_HOST: ldap
+POSTFIX_LDAP_SUFFIX: dc={{ POSTFIX_LDAP_DOMAIN }},dc={{ POSTFIX_LDAP_TLD }}
+POSTFIX_LDAP_SEARCH_BASE: "o=hosting,{{ POSTFIX_LDAP_DOMAIN }}"
+POSTFIX_LDAP_BIND_DN: "cn=phamm,{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_LDAP_BIND_PW: rhx
+POSTFIX_LDAP_CRYPTPW: userPassword
+POSTFIX_LDAP_PORT: 389
+POSTFIX_LDAP_VERSION: 3
+POSTFIX_VIRTUAL_MAILBOX_HOME: /home/vmail
+POSTFIX_VIRTUAL_MAILBOX_HOME_DOMAIN: "{{ POSTFIX_VIRTUAL_MAILBOX_HOME }}/domains"
+POSTFIX_VIRTUAL_VMAIL_UID: 5000
+POSTFIX_VIRTUAL_VMAIL_GID: 5000
+
+#configure_mail_apache_server_name: "{{ configure_mail_full_domain }}"
+#configure_mail_myhostname: "{{ configure_mail_full_domain }}"
+#configure_mail_mydestination: "{{ configure_mail_full_domain }}"
+
+POSTFIX_MAIL_SUBDOMAIN: mail
+POSTFIX_MAIL_DOMAIN: my-domain.com
+POSTFIX_MAIL_FULL_DOMAIN: "{{ POSTFIX_MAIL_SUBDOMAIN }}.{{ POSTFIX_MAIL_DOMAIN }}"
+POSTFIX_MYNETWORKS: "{{ POSTFIX_MAIL_DOMAIN }},{{ POSTFIX_MAIL_FULL_DOMAIN }},172.0.0.0/8,localhost,172.17.42.1"
+#      127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+
+POSTFIX_MYHOSTNAME: "{{ POSTFIX_MAIL_FULL_DOMAIN }}"
+POSTFIX_MYDOMAIN: "{{ POSTFIX_MAIL_DOMAIN }}"
+POSTFIX_MYORIGIN: "{{ POSTFIX_MYDOMAIN }}"
+
+POSTFIX_MYDESTINATION: "localhost,{{ POSTFIX_MAIL_FULL_DOMAIN }}"
+
+# $myhostname, localhost
+POSTFIX_INET_INTERFACES: all
+
+POSTFIX_TRANSPORT_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_TRANSPORT_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_TRANSPORT_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_TRANSPORT_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_TRANSPORT_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+POSTFIX_VIRTUALFORWARD_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_VIRTUALFORWARD_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_VIRTUALFORWARD_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_VIRTUALFORWARD_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_VIRTUALFORWARD_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+POSTFIX_ACCOUNTS_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_ACCOUNTS_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_ACCOUNTS_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_ACCOUNTS_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_ACCOUNTS_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+POSTFIX_ACCOUNTSMAP_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_ACCOUNTSMAP_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_ACCOUNTSMAP_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_ACCOUNTSMAP_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_ACCOUNTSMAP_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+POSTFIX_QUOTA_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_QUOTA_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_QUOTA_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_QUOTA_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_QUOTA_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+POSTFIX_VMA_SERVER_HOST: "{{ POSTFIX_LDAP_HOST }}"
+POSTFIX_VMA_SEARCH_BASE: "{{ POSTFIX_LDAP_SEARCH_BASE }}"
+POSTFIX_VMA_BIND_DN: "{{ POSTFIX_LDAP_BIND_DN }}"
+POSTFIX_VMA_BIND_PW: "{{ POSTFIX_LDAP_BIND_PW }}"
+POSTFIX_VMA_VERSION: "{{ POSTFIX_LDAP_VERSION }}"
+
+configure_mail_subdomain: mail
+configure_mail_domain: example.com
+configure_mail_full_domain: "{{ configure_mail_subdomain }}.{{ configure_mail_domain }}"
+
+configure_mail_apache_server_name: "{{ configure_mail_full_domain }}"
+configure_mail_myhostname: "{{ configure_mail_full_domain }}"
+configure_mail_mydestination: "{{ configure_mail_full_domain }}"
+configure_mail_mynetworks: "{{ configure_mail_domain }},{{ configure_mail_full_domain }},172.0.0.0/8,localhost,172.17.42.1"
+#      127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+configure_mail_relayhost:
+configure_mail_dkim_domain: "{{ configure_mail_domain }}"
+configure_mail_dkim_genkey_domain: "{{ configure_mail_domain }}"
+configure_mail_dkim_genkey_subdomain: "{{ configure_mail_subdomain }}"
+configure_mail_mailname: "{{ configure_mail_full_domain }}"
+
+configure_mail_database_root_password: rootpassword
+
+configure_mail_postfixadmin_database_type: mysqli
+configure_mail_postfixadmin_setup_password: setuppassword
+configure_mail_postfixadmin_database_name: postfixadmin
+configure_mail_postfixadmin_database_user: postfixadmin
+configure_mail_postfixadmin_database_password: postfixpassword
+
+configure_mail_smtpd_tls_cert_file: /etc/ssl/certs/smtpd.crt
+configure_mail_smtpd_tls_key_file: /etc/ssl/private/smtpd.key
+configure_mail_smtpd_tls_CAfile: /etc/ssl/certs/cacert.pem
+
+configure_mail_c: US
+configure_mail_st: Denial
+configure_mail_l: Springfield
+configure_mail_o: Dis
+configure_mail_cn: www.example.com
+
+

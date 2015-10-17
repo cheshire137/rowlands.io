@@ -1,0 +1,25 @@
+---
+# vars file for jgrowl.configure_ldap
+
+
+LDAP_DATABASE: hdb
+LDAP_BACKEND: hdb
+
+LDAP_MODULES: ['back_hdb']
+
+LDAP_ACLS: ['phamm', 'addressbook']
+
+#LDAP_SUFFIX: dc=rowlands,dc=io
+#LDAP_OPENSSL_SUBJECT: /C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost
+#LDAP_OPENSSL_SUBJECT: /C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com
+#LDAP_OPENSSL_ENABLED: Yes
+
+
+LDAP_INCLUDE_SCHEMAS: ['core', 'cosine', 'inetorgperson', 'nis', 'phamm', 'ISPEnv2', 'amavis', 'dnsdomain2', 'pureftpd', 'samba', 'radius']
+LDAP_INCLUDE_PHAMM_INDEXES: Yes
+
+#LDAP_LDIFS: ['main', 'mail']
+LDAP_LDIFS: ['main']
+
+#LDAP_LOG_LEVEL: 256
+LDAP_LOG_LEVEL: -1

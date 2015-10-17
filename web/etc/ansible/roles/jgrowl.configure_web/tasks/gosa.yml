@@ -1,0 +1,6 @@
+---
+
+
+
+#- command: a2enconf phamm
+- template: src=etc/apache2/conf.d/gosa.conf.j2 dest=/etc/apache2/conf.d/gosa.conf owner=root group=root mode=0644

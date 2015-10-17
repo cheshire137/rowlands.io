@@ -1,0 +1,25 @@
+#server_host = localhost
+#search_base = ou=people, dc=example, dc=net
+#query_filter = mail=%s
+#result_attribute = mailbox
+
+server_host = {{ POSTFIX_LDAP_HOST }}
+search_base = {{ POSTFIX_LDAP_SEARCH_BASE }}
+query_filter = (&(&(objectClass=VirtualMailAccount)(mail=%s))(forwardActive=FALSE)(accountActive=TRUE)(delete=FALSE))
+result_attribute = mail
+cache = no
+bind = yes
+bind_dn = {{ POSTFIX_LDAP_BIND_DN }}
+bind_pw = {{ POSTFIX_LDAP_BIND_PW }}
+version = {{ POSTFIX_LDAP_VERSION }}
+
+
+#accountsmap_server_host = $ldap_server_host
+#accountsmap_search_base = $ldap_search_base
+#accountsmap_query_filter = (&(&(objectClass=VirtualMailAccount)(mail=%s))(forwardActive=FALSE)(accountActive=TRUE)(delete=FALSE))
+#accountsmap_result_attribute = mail
+#accountsmap_cache = no
+#accountsmap_bind = yes
+#accountsmap_bind_dn = $ldap_bind_dn
+#accountsmap_bind_pw = $ldap_bind_pw
+#accountsmap_version = $ldap_version

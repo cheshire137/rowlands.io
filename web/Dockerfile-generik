@@ -1,0 +1,31 @@
+FROM generik/ansible
+MAINTAINER Jonathan Rowlands <jonrowlands83@gmail.com>
+
+RUN apk --update add bash php php-cli php-ldap php-xml gettext php-gettext imagemagick php-gd apache2-webdav apache2-ssl \
+apache2-ldap apache2-utils apache2-proxy apache2 php-apache2 openldap-clients \
+bzip2 libmcrypt-dev freetype-dev icu-dev jpeg-dev libmcrypt-dev libmemcached-dev libpng-dev libxml2-dev gnupg ca-certificates curl pcre \
+&& rm -rf /var/cache/apk/*
+
+#librecode0 libsqlite3-0 libxml2
+
+RUN mkdir -p /usr/share && curl -SL http://open.rhx.it/phamm/phamm-0.6.4.tar.gz | tar xvz -C /usr/share && mv /usr/share/phamm-0.6.4 /usr/share/phamm
+RUN chown apache:apache -R /usr/share/phamm
+
+RUN mkdir -p /usr/share && curl -SL http://oss.gonicus.de/pub/gosa/gosa-combined-2.7.4.tar.gz | tar xvz -C /usr/share && mv /usr/share/gosa-combined-2.7.4 /usr/share/gosa
+RUN chown apache:apache -R /usr/share/gosa
+
+RUN mkdir -p /var/spool/gosa
+RUN chown apache:apache -R /var/spool/gosa
+RUN chmod 770 /var/spool/gosa
+
+RUN cd /usr/share/gosa/ && /usr/share/gosa/update-gosa
+#RUN cd /usr/share/gosa/ && /usr/share/gosa/update-locale
+
+ADD etc/ansible/roles/jgrowl.configure_web /etc/ansible/roles/jgrowl.configure_web
+ADD main.yml /etc/ansible/main.yml
+ADD entry.sh /usr/local/bin/entry.sh
+
+EXPOSE 80 443
+#VOLUME ["/var/lib/openldap/openldap-data"]
+CMD ["/usr/local/bin/entry.sh"]
+

@@ -1,0 +1,21 @@
+consul:
+  image: gliderlabs/consul-server
+  ports:
+  - "8400:8400"
+  - "8500:8500"
+  - "8600:53/udp"
+  net: "host"
+  command: -bootstrap
+  mem_limit: 128m
+
+registrator:
+  image: gliderlabs/registrator:latest
+  net: "host"
+  volumes:
+  - /var/run/docker.sock:/tmp/docker.sock
+  net: "host"
+  environment:
+  - SERVICE_NAME=rowlandsio-registrator
+  command: consul://localhost:8500
+  mem_limit: 128m
+

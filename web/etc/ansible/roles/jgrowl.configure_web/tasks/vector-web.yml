@@ -1,0 +1,4 @@
+---
+
+- template: src=etc/apache2/conf-available/vector-web.conf.j2 dest=/etc/apache2/conf-available/vector-web.conf owner=root group=root mode=0644
+- command: a2enconf vector-web

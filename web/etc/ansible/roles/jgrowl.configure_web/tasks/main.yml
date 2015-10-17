@@ -1,0 +1,23 @@
+---
+# tasks file for jgrowl.configure_web
+
+- template: src=var/local/www/html/index.html.j2 dest=/var/local/www/html/index.html owner=root group=root mode=0644
+- template: src=etc/apache2/apache2.conf.j2 dest=/etc/apache2/apache2.conf owner=root group=root mode=0644
+- template: src=usr/local/etc/php/php.ini.j2 dest=/usr/local/etc/php/php.ini owner=root group=root mode=0644
+
+- file: path=/var/log/phamm.log state=touch mode=0755 owner=www-data group=nogroup
+
+#- template: src=var/www/index.php.j2 dest=/var/www/localhost/htdocs/index.php owner=root group=root mode=0644
+##- template: src=var/www/index.php.j2 dest=/var/www/localhost/htdocs    /var/www/index.php owner=root group=root mode=0644
+#
+##- file: path=/var/www/index.html state=absent
+#- file: path=/var/www/localhost/htdocs/index.html state=absent
+
+- template: src=etc/apache2/conf-available/servername.conf.j2 dest=/etc/apache2/conf-available/servername.conf owner=root group=root mode=0644
+- command: a2enconf servername
+
+- include: owncloud.yml
+- include: phamm.yml
+- include: rainloop.yml
+- include: vector-web.yml
+#- include: gosa.yml

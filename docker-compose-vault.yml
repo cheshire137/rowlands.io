@@ -1,0 +1,8 @@
+vault:
+  image: voxxit/vault
+  ports:
+  - "8200:8200"
+  memswap_limit: -1
+  mem_limit: 0
+
+

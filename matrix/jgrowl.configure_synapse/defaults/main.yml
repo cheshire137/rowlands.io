@@ -1,0 +1,62 @@
+---
+# defaults file for jgrowl.configure_synapse
+
+# Directories
+
+MATRIX_DIR: /opt/synapse
+MATRIX_CONFIG_DIR: /etc/synapse
+MATRIX_DATA_DIR: /var/synapse
+
+# General
+
+MATRIX_CONFIG_FILE: homeserver.yaml
+MATRIX_CONFIG_PATH: "{{ MATRIX_CONFIG_DIR }}/{{ MATRIX_CONFIG_FILE }}"
+
+MATRIX_REGISTRATION_SHARED_SECRET: "{{ lookup('env','MATRIX_REGISTRATION_SHARED_SECRET') | default(lookup('password', '/tmp/registration_shared_secret length=30'), true)}}"
+MATRIX_RECAPTCHA_PRIVATE_KEY: "{{ lookup('env','MATRIX_RECAPTCHA_PRIVATE_KEY') | default(lookup('password', '/tmp/recaptcha_private_key length=30'), true)}}"
+MATRIX_RECAPTCHA_PUBLIC_KEY: "{{ lookup('env','MATRIX_RECAPTCHA_PUBLIC_KEY') | default(lookup('password', '/tmp/recaptcha_public_key length=30'), true)}}"
+
+MATRIX_ENABLE_REGISTRATION: False
+MATRIX_ENABLE_REGISTRATION_CAPTCHA: False
+
+MATRIX_WEB_CLIENT: True
+MATRIX_SOFT_FILE_LIMIT: 0
+
+MATRIX_SERVER_NAME: "{{ lookup('env','MATRIX_SERVER_NAME') | default('machine.my.domain.name', true)}}"
+MATRIX_PORT: 8448
+MATRIX_VERBOSE: 0
+
+# Database
+
+MATRIX_DATABASE_NAME: sqlite3
+
+# TLS
+
+MATRIX_TLS: true
+MATRIX_NO_TLS: False
+
+MATRIX_TLS_CERTIFICATE_FILE: "{{ MATRIX_SERVER_NAME }}.tls.crt"
+MATRIX_TLS_CERTIFICATE_PATH: "{{ MATRIX_DATA_DIR }}/{{ MATRIX_TLS_CERTIFICATE_FILE }}"
+
+MATRIX_TLS_PRIVATE_KEY_FILE: "{{ MATRIX_SERVER_NAME }}.tls.key"
+MATRIX_TLS_PRIVATE_KEY_PATH: "{{ MATRIX_DATA_DIR }}/{{ MATRIX_TLS_PRIVATE_KEY_FILE }}"
+
+MATRIX_TLS_DH_PARAMS_FILE: "{{ MATRIX_SERVER_NAME }}.tls.dh"
+MATRIX_TLS_DH_PARAMS_PATH: "{{ MATRIX_DATA_DIR}}/{{ MATRIX_TLS_DH_PARAMS_FILE}}"
+
+MATRIX_SIGNING_KEY_FILE: "{{ MATRIX_SERVER_NAME }}.signing.key"
+MATRIX_SIGNING_KEY_PATH: "{{ MATRIX_DATA_DIR }}/{{ MATRIX_SIGNING_KEY_FILE }}"
+
+# Turn
+
+MATRIX_TURN_SHARED_SECRET: "{{ lookup('env','MATRIX_RECAPTCHA_PUBLIC_KEY') | default(lookup('password', '/tmp/matrix_turn_shared_secret length=30'), true)}}"
+MATRIX_TURN_URIS: []
+
+
+# Logging
+
+MATRIX_CONFIG_LOG_FILE: "{{ MATRIX_SERVER_NAME }}.log.config"
+MATRIX_CONFIG_LOG_PATH: "{{ MATRIX_CONFIG_DIR }}/{{ MATRIX_CONFIG_LOG_FILE }}"
+
+MATRIX_LOG_FILE: homeserver.log
+MATRIX_LOG_PATH: "{{ MATRIX_DATA_DIR }}/{{ MATRIX_LOG_FILE }}"

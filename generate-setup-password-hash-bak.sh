@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+PASSWORD=$1
+TIMESTAMP=$(date +%s)
+HOST=127.0.0.1
+RANDOMNESS=$(shuf -i 0-60000 -n 1)
+SALT=$TIMESTAMP*$HOST*$RANDOMNESS
+#HASHED_SALT=$(echo $SALT | md5sum | cut -d" " -f1 | tr -d "\n\r")
+
+HASHED_SALT=14e7cb4c80d0ecbd36f13ef64f8b9d25
+#:944bdde6257dfd2a2c4788aced6266a0981a5c72
+
+SALT_PASSWORD=$HASHED_SALT:$PASSWORD
+HASHED_SALT_PASSWORD=$(echo $SALT_PASSWORD | sha1sum | cut -d" " -f1 | tr -d "\n\r")
+
+HASHED_PASSWORD=$HASHED_SALT:$HASHED_SALT_PASSWORD
+echo $HASHED_PASSWORD
+

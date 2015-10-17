@@ -1,0 +1,23 @@
+---
+# tasks file for jgrowl.configure_synapse
+
+- file: path={{ MATRIX_DIR }} state=directory mode=0755 owner=root group=root
+- file: path={{ MATRIX_DATA_DIR }} state=directory mode=0755 owner=root group=root
+- file: path={{ MATRIX_LOG_PATH }} state=touch mode=0755 owner=root group=root
+
+# Run generate command if we don't have a tls cert.
+- command: python -m synapse.app.homeserver --server-name {{ MATRIX_SERVER_NAME }} --config-path {{ MATRIX_CONFIG_PATH }} --generate-config chdir={{ MATRIX_CONFIG_DIR }} creates={{ MATRIX_TLS_CERTIFICATE_PATH }}
+
+# Delete the generated config files. We will be using templates
+- file: path={{ MATRIX_CONFIG_PATH }} state=absent
+- file: path={{ MATRIX_CONFIG_LOG_PATH }} state=absent
+
+- template: src=homeserver.yaml.j2 dest={{ MATRIX_CONFIG_PATH }} owner=root group=root mode=0644
+- template: src=log.config.j2 dest={{ MATRIX_CONFIG_LOG_PATH }} owner=root group=root mode=0644
+
+# Move the generated tls files to the data directory
+- command: mv {{ MATRIX_TLS_CERTIFICATE_FILE }} {{ MATRIX_DATA_DIR }} chdir={{ MATRIX_CONFIG_DIR }} creates={{ MATRIX_TLS_CERTIFICATE_PATH }}
+- command: mv {{ MATRIX_TLS_PRIVATE_KEY_FILE }} {{ MATRIX_DATA_DIR }} chdir={{ MATRIX_CONFIG_DIR }} creates={{ MATRIX_TLS_PRIVATE_KEY_PATH }}
+- command: mv {{ MATRIX_TLS_DH_PARAMS_FILE }} {{ MATRIX_DATA_DIR }} chdir={{ MATRIX_CONFIG_DIR }} creates={{ MATRIX_TLS_DH_PARAMS_PATH }}
+- command: mv {{ MATRIX_SIGNING_KEY_FILE }} {{ MATRIX_DATA_DIR }} chdir={{ MATRIX_CONFIG_DIR }} creates={{ MATRIX_SIGNING_KEY_PATH }}
+

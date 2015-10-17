@@ -1,0 +1,14 @@
+FROM generik/ansible
+MAINTAINER Jonathan Rowlands <jonrowlands83@gmail.com>
+
+RUN apk --update add bash git curl nodejs \
+&& rm -rf /var/cache/apk/*
+
+RUN mkdir -p /opt/vector
+WORKDIR /opt/vector
+RUN git clone https://github.com/vector-im/vector-web.git .
+
+EXPOSE 80 443
+#VOLUME ["/var/lib/openldap/openldap-data"]
+CMD ["/usr/local/bin/entry.sh"]
+

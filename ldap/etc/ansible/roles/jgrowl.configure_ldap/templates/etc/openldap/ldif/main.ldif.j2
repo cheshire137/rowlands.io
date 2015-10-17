@@ -1,0 +1,9 @@
+dn:{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: domain
+dc: {{ LDAP_DOMAIN }}
+
+dn:{{ LDAP_PHAMM_ROOT_SUFFIX }},{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: organizationalRole
+cn: {{ LDAP_ROOT_NAME }}

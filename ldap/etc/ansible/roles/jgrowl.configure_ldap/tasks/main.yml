@@ -1,0 +1,43 @@
+---
+# tasks file for jgrowl.configure_ldap
+
+- shell: slappasswd -s {{ LDAP_ROOTPW }}
+  register: LDAP_ROOTPW_HASH
+
+- template: src=var/lib/openldap/openldap-data/DB_CONFIG.j2 dest=/var/lib/openldap/openldap-data/DB_CONFIG owner=ldap group=ldap mode=0600
+- template: src=etc/openldap/ldap.conf.j2 dest=/etc/openldap/ldap.conf owner=root group=root mode=0644
+- template: src=etc/openldap/slapd.conf.j2 dest=/etc/openldap/slapd.conf owner=root group=ldap mode=0640
+
+# ldapscripts configuration
+- template: src=usr/local/etc/ldapscripts/ldapscripts.conf.j2 dest={{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapscripts.conf owner=root group=ldap mode=0640
+- template: src=usr/local/etc/ldapscripts/ldapadduser.template.j2 dest={{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapadduser.template owner=root group=ldap mode=0640
+- template: src=usr/local/etc/ldapscripts/ldapaddgroup.template.j2 dest={{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapaddgroup.template owner=root group=ldap mode=0640
+- template: src=usr/local/etc/ldapscripts/ldapaddmachine.template.j2 dest={{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapaddmachine.template owner=root group=ldap mode=0640
+
+- template: src=etc/openldap/phamm.acl.j2 dest=/etc/openldap/phamm.acl owner=root group=root mode=0444
+
+- copy: src=etc/openldap/addressbook.acl dest=/etc/openldap/addressbook.acl owner=root group=root mode=0444
+- copy: src=etc/openldap/global.acl dest=/etc/openldap/global.acl owner=root group=root mode=0444
+
+- copy: src=etc/openldap/schema/amavis.schema dest=/etc/openldap/schema/amavis.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/dnsdomain2.schema dest=/etc/openldap/schema/dnsdomain2.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/ISPEnv2.schema dest=/etc/openldap/schema/ISPEnv2.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/phamm.schema dest=/etc/openldap/schema/phamm.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/phamm-vacation.schema dest=/etc/openldap/schema/phamm-vacation.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/pureftpd.schema dest=/etc/openldap/schema/pureftpd.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/radius.schema dest=/etc/openldap/schema/radius.schema owner=root group=root mode=0444
+- copy: src=etc/openldap/schema/samba.schema dest=/etc/openldap/schema/samba.schema owner=root group=root mode=0444
+
+#- include: configure_ssl.yml
+
+- shell: slappasswd -s {{ LDAP_PHAMM_POSTMASTER_PASSWORD }}
+  register: LDAP_PHAMM_POSTMASTER_PASSWORD_HASH_OUTPUT
+
+- shell: slappasswd -s {{ LDAP_PHAMM_PASSWORD }}
+  register: LDAP_PHAMM_PASSWORD_HASH_OUTPUT
+
+- set_fact:
+     LDAP_PHAMM_POSTMASTER_PASSWORD_HASH: "{{ LDAP_PHAMM_POSTMASTER_PASSWORD_HASH_OUTPUT.stdout }}"
+     LDAP_PHAMM_PASSWORD_HASH: "{{ LDAP_PHAMM_PASSWORD_HASH_OUTPUT.stdout }}"
+
+- include: configure_ldifs.yml

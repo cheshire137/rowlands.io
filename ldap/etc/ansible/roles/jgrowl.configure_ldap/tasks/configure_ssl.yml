@@ -1,0 +1,41 @@
+---
+
+- template: src=etc/ssl/openssl.cnf.j2 dest=/etc/ssl/openssl.cnf owner=root group=root mode=0644
+
+# http://www.openldap.org/faq/data/cache/185.html
+
+- file: path={{ LDAP_SSL_CA_DIR }}/certs state=directory recurse=yes mode=0744 owner=ldap group=ldap
+- file: path={{ LDAP_SSL_CA_DIR }}/crl state=directory recurse=yes mode=0744 owner=ldap group=ldap
+- file: path={{ LDAP_SSL_CA_DIR }}/newcerts state=directory recurse=yes mode=0744 owner=ldap group=ldap
+- file: path={{ LDAP_SSL_CA_DIR }}/private state=directory recurse=yes mode=0744 owner=ldap group=ldap
+- file: path={{ LDAP_SSL_CA_DIR }}/index.txt state=touch mode=0744 owner=ldap group=ldap
+
+- command: openssl req -{{'password ' + LDAP_SSL_CA_PASSWORD if LDAP_SSL_CA_PASSWORD == '' else 'nodes' }} -subj "{{ LDAP_OPENSSL_SUBJECT }}" -new -keyout {{ LDAP_SSL_CA_DIR }}/private/{{ LDAP_SSL_CAKEY }} -out {{ LDAP_SSL_CA_DIR }}/{{ LDAP_SSL_CAREQ }} chdir={{ LDAP_SSL_CA_DIR }}
+- command: openssl ca -create_serial -out {{ LDAP_SSL_CA_DIR }}/{{ LDAP_SSL_CACERT }} -days {{ LDAP_SSL_CADAYS }} -batch -keyfile {{ LDAP_SSL_CA_DIR }}/private/{{ LDAP_SSL_CAKEY }} -selfsign -extensions v3_ca -infiles {{ LDAP_SSL_CA_DIR }}/{{ LDAP_SSL_CAREQ }}
+    chdir={{ LDAP_SSL_CA_DIR }}
+    creates={{ LDAP_SSL_CA_DIR }}/{{ LDAP_SSL_CACERT }}
+
+# create a cert request and private key
+- command: openssl req -{{'password ' + LDAP_SSL_CA_PASSWORD if LDAP_SSL_CA_PASSWORD == '' else 'nodes' }} -subj "{{ LDAP_OPENSSL_SUBJECT }}" -new -nodes -keyout serverkey.pem -out serverkey.pem
+    chdir={{ LDAP_SSL_CA_DIR }}
+    creates=serverkey.pem
+
+#    if [ ! -f ${CATOP}/private/$CAKEY ]; then
+#        echo "CA certificate filename (or enter to create)"
+#        read FILE
+#
+#        # ask user for existing CA certificate
+#        if [ "$FILE" ]; then
+#            cp_pem $FILE ${CATOP}/private/$CAKEY PRIVATE
+#            cp_pem $FILE ${CATOP}/$CACERT CERTIFICATE
+#            RET=$?
+#            if [ ! -f "${CATOP}/serial" ]; then
+#                $X509 -in ${CATOP}/$CACERT -noout -next_serial \
+#                      -out ${CATOP}/serial
+#            fi
+#        else
+
+
+# Sign
+- command: openssl ca -batch -subj "{{ LDAP_OPENSSL_SUBJECT }}" -policy policy_anything -out servercrt.pem -infiles serverkey.pem
+    chdir={{ LDAP_SSL_CA_DIR }}

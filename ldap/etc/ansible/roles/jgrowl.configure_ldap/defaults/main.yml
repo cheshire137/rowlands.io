@@ -1,0 +1,111 @@
+---
+# defaults file for jgrowl.configure_ldap
+
+LDAP_CONFIGURE: Yes
+LDAP_INITIALIZE_DATABASE: No
+
+# General container configuration
+# see table 5.1 in http://www.openldap.org/doc/admin24/slapdconf2.html for the available log levels.
+#    -1	any	enable all debugging
+#     0	 	no debugging
+#     1	(0x1 trace)	trace function calls
+#     2	(0x2 packets)	debug packet handling
+#     4	(0x4 args)	heavy trace debugging
+#     8	(0x8 conns)	connection management
+#    16	(0x10 BER)	print out packets sent and received
+#    32	(0x20 filter)	search filter processing
+#    64	(0x40 config)	configuration processing
+#   128	(0x80 ACL)	access control list processing
+#   256	(0x100 stats)	stats log connections/operations/results
+#   512	(0x200 stats2)	stats log entries sent
+#  1024	(0x400 shell)	print communication with shell backends
+#  2048	(0x800 parse)	print entry parsing debugging
+# 16384	(0x4000 sync)	syncrepl consumer processing
+# 32768	(0x8000 none)	only messages that get logged whatever log level is set
+LDAP_LOG_LEVEL: -1
+#LDAP_LOG_LEVEL: 256
+
+LDAP_DATABASE: bdb
+LDAP_BACKEND: bdb
+
+LDAP_DOMAIN: my-domain
+LDAP_TLD: com
+LDAP_MODULEPATH: /usr/lib/ldap
+LDAP_MODULES: []
+
+LDAP_GROUPS_NAME: ou=Groups
+LDAP_USERS_NAME: ou=Users
+LDAP_MACHINES_NAME: ou=Machines
+LDAP_GROUPS_SUFFIX: "{{ LDAP_GROUPS_NAME }},{{ LDAP_SUFFIX }}"
+LDAP_USERS_SUFFIX: "{{ LDAP_USERS_NAME }},{{ LDAP_SUFFIX }}"
+
+LDAP_ROOT_NAME: admin
+LDAP_SUFFIX: dc={{ LDAP_DOMAIN }},dc={{ LDAP_TLD }}
+LDAP_ROOT_SUFFIX: cn={{ LDAP_ROOT_NAME }}
+LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
+LDAP_ROOTPW: secret
+LDAP_OPENSSL_ENABLED: No
+LDAP_OPENSSL_CNAME: localhost
+LDAP_OPENSSL_SUBJECT: "/C=US/ST=Denial/L=Springfield/O=Dis/CN={{ LDAP_OPENSSL_CNAME }}"
+
+LDAP_SCHEMA_PATH: /etc/openldap/schema
+
+LDAP_ACLS: []
+LDAP_ACL_PATH: /etc/openldap
+
+LDAP_LDIF_SRC_PATH: etc/openldap/ldif
+LDAP_LDIF_PATH: "/{{ LDAP_LDIF_SRC_PATH }}"
+LDAP_DATA_PATH: /var/lib/openldap/openldap-data
+LDAP_SSL_DIR: /usr/local/etc/ssl/ldap
+
+LDAP_SSL_CA_DIR: "{{ LDAP_SSL_DIR }}"
+LDAP_SSL_CA_PASSWORD:
+LDAP_SSL_CAKEY: cakey.pem
+LDAP_SSL_CAREQ: careq.pem
+LDAP_SSL_CACERT: cacert.pem
+LDAP_SSL_CADAYS: 1095
+
+# This directory needs to be persistent
+LDAP_ANSIBLE_DONE_DIR: "{{ LDAP_DATA_PATH }}"
+
+# 'main', 'mail'
+LDAP_LDIFS: []
+
+# Default installations have the following schemas
+# 'core', 'collective', 'corba', 'cosine', 'duaconf', 'dyngroup', 'inetorgperson', 'java', 'misc', 'nis', 'openldap', 'pmi', 'ppolicy'
+# Additional schemas used by phamm include:
+# 'amavis', 'dnsdomain2', 'ISPEnv2', 'phamm', 'phamm-vacation', 'pureftpd', 'radius', 'samba'
+LDAP_INCLUDE_SCHEMAS: ['core', 'cosine', 'nis']
+
+# These are required for phamm
+#'core', 'cosine', 'inetorgperson', 'nis', 'phamm', 'ISPEnv2', 'amavis', 'dnsdomain2', 'pureftpd', 'samba'
+
+LDAP_INCLUDE_PHAMM_INDEXES: No
+
+LDAP_PHAMM_DOMAIN: "{{ LDAP_DOMAIN }}"
+LDAP_PHAMM_TLD: "{{ LDAP_TLD }}"
+LDAP_PHAMM_SUFFIX: dc={{ LDAP_PHAMM_DOMAIN }},dc={{ LDAP_PHAMM_TLD }}
+LDAP_PHAMM_FQDN: "{{ LDAP_PHAMM_DOMAIN }}.{{ LDAP_PHAMM_TLD }}"
+#LDAP_PHAMM_ROOT_NAME: Manager
+LDAP_PHAMM_ROOT_NAME: "{{ LDAP_ROOT_NAME }}"
+LDAP_PHAMM_ROOT_SUFFIX: cn={{ LDAP_PHAMM_ROOT_NAME }}
+LDAP_PHAMM_ROOT_ORG: ou={{ LDAP_PHAMM_ROOT_NAME }}
+
+#LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
+LDAP_PHAMM_USERPW: rhx
+LDAP_PHAMM_POSTMASTER_PASSWORD: rhx
+LDAP_PHAMM_PASSWORD: rhx
+
+# LDAPSCRIPTS
+LDAP_LDAPSCRIPTS_SERVER: ldap://localhost
+LDAP_LDAPSCRIPTS_SUFFIX: "{{ LDAP_SUFFIX }}"
+LDAP_LDAPSCRIPTS_GSUFFIX: "{{ LDAP_GROUPS_NAME }}"
+LDAP_LDAPSCRIPTS_USUFFIX: "{{ LDAP_USERS_NAME }}"
+LDAP_LDAPSCRIPTS_MSUFFIX: "{{ LDAP_MACHINES_NAME }}"
+LDAP_LDAPSCRIPTS_BINDDN: "{{ LDAP_ROOTDN }}"
+
+LDAP_LDAPSCRIPTS_CONF_PATH: /usr/local/etc/ldapscripts
+LDAP_LDAPSCRIPTS_ICONVCHAR: ISO-8859-15
+LDAP_LDAPSCRIPTS_GTEMPLATE: "{{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapaddgroup.template"
+LDAP_LDAPSCRIPTS_UTEMPLATE: "{{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapadduser.template"
+LDAP_LDAPSCRIPTS_MTEMPLATE: "{{ LDAP_LDAPSCRIPTS_CONF_PATH }}/ldapaddmachine.template"

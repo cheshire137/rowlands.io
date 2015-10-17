@@ -10,8 +10,10 @@ source ./set-variables.sh
 #docker-compose --tls=1 up ovpn
 
 # Setup mail
-docker-compose --tls=1 up mail_data
-docker-compose --tls=1 up -d mail
+export DOCKER_CLIENT_TIMEOUT=120
+export DOCKER_TLS_VERIFY=1
+#docker-compose up -d mail_data
+docker-compose -p rowlandsio up -d mail
 
 
 

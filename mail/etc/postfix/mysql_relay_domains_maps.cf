@@ -1,8 +1,0 @@
-user = postfixadmin
-password = postfixpassword
-hosts = 127.0.0.1
-dbname = postfixadmin
-table = domain
-select_field = domain
-where_field = domain
-additional_conditions = and backupmx = '1'

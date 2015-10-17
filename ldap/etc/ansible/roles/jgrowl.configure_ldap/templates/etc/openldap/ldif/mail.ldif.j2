@@ -1,0 +1,35 @@
+dn:vd={{ LDAP_PHAMM_FQDN }},o=hosting,{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: VirtualDomain
+postfixTransport: maildrop:
+lastChange: 1066742030
+vd: {{ LDAP_PHAMM_FQDN }}
+delete: FALSE
+accountActive: TRUE
+adminID: cn=matrix,ou={{ LDAP_PHAMM_ROOT_NAME }},{{ LDAP_PHAMM_SUFFIX }}
+editAV: FALSE
+maxAlias: 20
+maxMail: 10
+maxQuota: 250
+
+dn:cn=postmaster,vd={{ LDAP_PHAMM_FQDN }},o=hosting,{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: VirtualMailAlias
+mail: postmaster@{{ LDAP_PHAMM_FQDN }}
+lastChange: 1066742031
+maildrop: postmaster
+accountActive: TRUE
+cn: postmaster
+sn: postmaster
+userPassword: {{ LDAP_PHAMM_POSTMASTER_PASSWORD_HASH }}
+editAccounts: TRUE
+
+dn:mail=abuse@{{ LDAP_PHAMM_FQDN }},vd={{ LDAP_PHAMM_FQDN }},o=hosting,{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: VirtualMailAlias
+mail: abuse@{{ LDAP_PHAMM_FQDN }}
+lastChange: 1066742031
+maildrop: postmaster
+accountActive: TRUE
+cn: abuse
+sn: abuse

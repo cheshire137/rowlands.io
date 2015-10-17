@@ -1,0 +1,8 @@
+synapse:
+  build: .
+  ports:
+   - "8448:8448"
+  volumes:
+   - ./jgrowl.configure_synapse:/etc/ansible/roles/jgrowl.configure_synapse
+#  links:
+#   - redis

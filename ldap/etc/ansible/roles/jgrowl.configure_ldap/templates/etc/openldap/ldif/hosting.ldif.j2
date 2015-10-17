@@ -1,0 +1,12 @@
+dn:o=hosting,{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: organization
+o: hosting
+description: {{ LDAP_PHAMM_FQDN }} hosting root
+
+dn:cn=phamm,o=hosting,{{ LDAP_PHAMM_SUFFIX }}
+objectClass: top
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: phamm
+userPassword: {{ LDAP_PHAMM_PASSWORD_HASH }}
