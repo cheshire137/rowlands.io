@@ -4,3 +4,4 @@
 env
 mail-bak
 .idea/workspace.xml
+**/*.ovpn
