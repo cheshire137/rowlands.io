@@ -71,19 +71,16 @@ LDAP_SSL_CADAYS: 1095
 LDAP_ANSIBLE_DONE_DIR: "{{ LDAP_DATA_PATH }}"
 
 # 'main', 'mail'
-#LDAP_LDIFS: []
 LDAP_LDIFS: "{{ lookup('env','LDAP_LDIFS') | default('', true) | split(',')}}"
 
 # Default installations have the following schemas
 # 'core', 'collective', 'corba', 'cosine', 'duaconf', 'dyngroup', 'inetorgperson', 'java', 'misc', 'nis', 'openldap', 'pmi', 'ppolicy'
 # Additional schemas used by phamm include:
 # 'amavis', 'dnsdomain2', 'ISPEnv2', 'phamm', 'phamm-vacation', 'pureftpd', 'radius', 'samba'
-#LDAP_INCLUDE_SCHEMAS: ['core', 'cosine', 'nis']
-LDAP_INCLUDE_SCHEMAS: "{{ lookup('env','LDAP_INCLUDE_SCHEMAS') | default('core,cosine,nis', true) | split(',')}}"
 # These are required for phamm
 #'core', 'cosine', 'inetorgperson', 'nis', 'phamm', 'ISPEnv2', 'amavis', 'dnsdomain2', 'pureftpd', 'samba'
+LDAP_INCLUDE_SCHEMAS: "{{ lookup('env','LDAP_INCLUDE_SCHEMAS') | default('core,cosine,nis', true) | split(',')}}"
 
-#LDAP_INCLUDE_PHAMM_INDEXES: No
 LDAP_INCLUDE_PHAMM_INDEXES: "{{ lookup('env','LDAP_INCLUDE_PHAMM_INDEXES') | default('No', true) | bool }}"
 
 LDAP_PHAMM_DOMAIN: "{{ LDAP_DOMAIN }}"
@@ -95,7 +92,6 @@ LDAP_PHAMM_ROOT_NAME: "{{ LDAP_ROOT_NAME }}"
 LDAP_PHAMM_ROOT_SUFFIX: cn={{ LDAP_PHAMM_ROOT_NAME }}
 LDAP_PHAMM_ROOT_ORG: ou={{ LDAP_PHAMM_ROOT_NAME }}
 
-#LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
 LDAP_PHAMM_USERPW: "{{ lookup('env','LDAP_PHAMM_USERPW') | default('rhx', true)}}"
 LDAP_PHAMM_POSTMASTER_PASSWORD: "{{ lookup('env','LDAP_PHAMM_POSTMASTER_PASSWORD') | default('rhx', true)}}"
 LDAP_PHAMM_PASSWORD: "{{ lookup('env','LDAP_PHAMM_PASSWORD') | default('rhx', true)}}"
