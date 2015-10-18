@@ -6,9 +6,9 @@ consul:
   - "8600:53/udp"
   net: "host"
   command: -bootstrap
+  mem_limit: 128m
   environment:
   - SERVICE_NAME=consul
-  mem_limit: 128m
 
 registrator:
   image: gliderlabs/registrator:latest
@@ -16,10 +16,19 @@ registrator:
   volumes:
   - /var/run/docker.sock:/tmp/docker.sock
   net: "host"
-  environment:
-  - SERVICE_NAME=registrator
   command: consul://localhost:8500
   mem_limit: 128m
+  environment:
+  - SERVICE_NAME=registrator
+
+vault:
+  image: voxxit/vault
+  ports:
+  - "8200:8200"
+  memswap_limit: -1
+  mem_limit: 0
+  environment:
+  - SERVICE_NAME=vault
 
 ldap:
   build: ldap
@@ -29,7 +38,27 @@ ldap:
   volumes:
    - ./ldap/jgrowl.configure_ldap:/etc/ansible/roles/jgrowl.configure_ldap
   mem_limit: 256m
+  environment:
+  - SERVICE_NAME=ldap
   env_file: env
+
+
+#ldap_data:
+#  image: busybox
+#  volumes:
+#  - /etc/ldap/slapd.d
+#  - /var/lib/ldap
+#  mem_limit: 128m
+#
+#ldap:
+#  image: osixia/openldap
+#  volumes_from:
+#  - ldap_data
+#  ports:
+#  - "389:389"
+#  - "636:636"
+#  mem_limit: 256m
+#  env_file: env
 
 synapse:
   build: matrix
