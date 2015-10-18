@@ -1,6 +1,12 @@
 # This is a work in progress - Many things are probably broke
 
+    docker-compose -f development.yml -p rowlandsio up
+    docker-compose -f development.yml -p rowlandsio rm -f
+
+
+
 # Setup instructions 
+
 
 ## Obtain a docker host and source docker environment variables
 
@@ -51,10 +57,6 @@
 - /etc/mail/dkim.key
 - /usr/lib/courier/pop3d.pem
 - /usr/lib/courier/imapd.pem
-
-
-
-
 
 # Matrix 
 docker run -v /tmp/data:/data --rm -e SERVER_NAME=mail.rowlands.io silviof/docker-matrix generate

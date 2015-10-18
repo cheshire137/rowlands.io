@@ -11,6 +11,6 @@ ansible-playbook  /etc/ansible/main.yml -i localhost, --connection=local
 
 echo "Starting in 10 seconds..."
 sleep 10
-export LDAP_LOG_LEVEL=256
-#export LDAP_LOG_LEVEL=-1
+
+export LDAP_LOG_LEVEL=${LDAP_LOG_LEVEL:=256}
 exec /usr/sbin/slapd -h "ldap://$HOSTNAME ldaps://$HOSTNAME ldap://localhost ldaps://localhost ldapi:///" -u ldap -g ldap -d $LDAP_LOG_LEVEL

@@ -1,9 +1,6 @@
 FROM generik/ansible
 MAINTAINER Jonathan Rowlands <jonrowlands83@gmail.com>
 
-#RUN apk --update add build-base py-virtualenv openssl-dev jpeg-dev libffi-dev sqlite python-dev gcc musl-dev py-pillow \
-#    && rm -rf /var/cache/apk/*
-
 RUN apk --update add build-base py-virtualenv openssl-dev libffi-dev sqlite python-dev gcc musl-dev py-pillow \
     && rm -rf /var/cache/apk/*
 

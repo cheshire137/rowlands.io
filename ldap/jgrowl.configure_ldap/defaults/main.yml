@@ -22,16 +22,15 @@ LDAP_INITIALIZE_DATABASE: No
 #  2048	(0x800 parse)	print entry parsing debugging
 # 16384	(0x4000 sync)	syncrepl consumer processing
 # 32768	(0x8000 none)	only messages that get logged whatever log level is set
-LDAP_LOG_LEVEL: -1
-#LDAP_LOG_LEVEL: 256
+LDAP_LOG_LEVEL: "{{ lookup('env','LDAP_LOG_LEVEL') | default('256', true)}}"
 
-LDAP_DATABASE: bdb
-LDAP_BACKEND: bdb
+LDAP_DATABASE: "{{ lookup('env','LDAP_DATABASE') | default('bdb', true)}}"
+LDAP_BACKEND: "{{ lookup('env','LDAP_BACKEND') | default(LDAP_DATABASE, true)}}"
 
-LDAP_DOMAIN: my-domain
-LDAP_TLD: com
+LDAP_DOMAIN: "{{ lookup('env','LDAP_DOMAIN') | default('my-domain', true)}}"
+LDAP_TLD: "{{ lookup('env','LDAP_TLD') | default('com', true)}}"
 LDAP_MODULEPATH: /usr/lib/ldap
-LDAP_MODULES: []
+LDAP_MODULES: "{{ lookup('env','LDAP_MODULES') | default('', true) | split(',')}}"
 
 LDAP_GROUPS_NAME: ou=Groups
 LDAP_USERS_NAME: ou=Users
@@ -39,18 +38,21 @@ LDAP_MACHINES_NAME: ou=Machines
 LDAP_GROUPS_SUFFIX: "{{ LDAP_GROUPS_NAME }},{{ LDAP_SUFFIX }}"
 LDAP_USERS_SUFFIX: "{{ LDAP_USERS_NAME }},{{ LDAP_SUFFIX }}"
 
-LDAP_ROOT_NAME: admin
+LDAP_ROOT_NAME: "{{ lookup('env','LDAP_ROOT_NAME') | default('admin', true)}}"
 LDAP_SUFFIX: dc={{ LDAP_DOMAIN }},dc={{ LDAP_TLD }}
 LDAP_ROOT_SUFFIX: cn={{ LDAP_ROOT_NAME }}
 LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
-LDAP_ROOTPW: secret
+
+LDAP_ROOTPW: "{{ lookup('env','LDAP_ROOTPW') | default('secret', true)}}"
+
 LDAP_OPENSSL_ENABLED: No
 LDAP_OPENSSL_CNAME: localhost
 LDAP_OPENSSL_SUBJECT: "/C=US/ST=Denial/L=Springfield/O=Dis/CN={{ LDAP_OPENSSL_CNAME }}"
 
 LDAP_SCHEMA_PATH: /etc/openldap/schema
 
-LDAP_ACLS: []
+LDAP_ACLS: "{{ lookup('env','LDAP_ACLS') | default('', true) | split(',')}}"
+
 LDAP_ACL_PATH: /etc/openldap
 
 LDAP_LDIF_SRC_PATH: etc/openldap/ldif
@@ -69,18 +71,20 @@ LDAP_SSL_CADAYS: 1095
 LDAP_ANSIBLE_DONE_DIR: "{{ LDAP_DATA_PATH }}"
 
 # 'main', 'mail'
-LDAP_LDIFS: []
+#LDAP_LDIFS: []
+LDAP_LDIFS: "{{ lookup('env','LDAP_LDIFS') | default('', true) | split(',')}}"
 
 # Default installations have the following schemas
 # 'core', 'collective', 'corba', 'cosine', 'duaconf', 'dyngroup', 'inetorgperson', 'java', 'misc', 'nis', 'openldap', 'pmi', 'ppolicy'
 # Additional schemas used by phamm include:
 # 'amavis', 'dnsdomain2', 'ISPEnv2', 'phamm', 'phamm-vacation', 'pureftpd', 'radius', 'samba'
-LDAP_INCLUDE_SCHEMAS: ['core', 'cosine', 'nis']
-
+#LDAP_INCLUDE_SCHEMAS: ['core', 'cosine', 'nis']
+LDAP_INCLUDE_SCHEMAS: "{{ lookup('env','LDAP_INCLUDE_SCHEMAS') | default('core,cosine,nis', true) | split(',')}}"
 # These are required for phamm
 #'core', 'cosine', 'inetorgperson', 'nis', 'phamm', 'ISPEnv2', 'amavis', 'dnsdomain2', 'pureftpd', 'samba'
 
-LDAP_INCLUDE_PHAMM_INDEXES: No
+#LDAP_INCLUDE_PHAMM_INDEXES: No
+LDAP_INCLUDE_PHAMM_INDEXES: "{{ lookup('env','LDAP_INCLUDE_PHAMM_INDEXES') | default('No', true) | bool }}"
 
 LDAP_PHAMM_DOMAIN: "{{ LDAP_DOMAIN }}"
 LDAP_PHAMM_TLD: "{{ LDAP_TLD }}"
@@ -92,9 +96,9 @@ LDAP_PHAMM_ROOT_SUFFIX: cn={{ LDAP_PHAMM_ROOT_NAME }}
 LDAP_PHAMM_ROOT_ORG: ou={{ LDAP_PHAMM_ROOT_NAME }}
 
 #LDAP_ROOTDN: "{{ LDAP_ROOT_SUFFIX }},{{ LDAP_SUFFIX }}"
-LDAP_PHAMM_USERPW: rhx
-LDAP_PHAMM_POSTMASTER_PASSWORD: rhx
-LDAP_PHAMM_PASSWORD: rhx
+LDAP_PHAMM_USERPW: "{{ lookup('env','LDAP_PHAMM_USERPW') | default('rhx', true)}}"
+LDAP_PHAMM_POSTMASTER_PASSWORD: "{{ lookup('env','LDAP_PHAMM_POSTMASTER_PASSWORD') | default('rhx', true)}}"
+LDAP_PHAMM_PASSWORD: "{{ lookup('env','LDAP_PHAMM_PASSWORD') | default('rhx', true)}}"
 
 # LDAPSCRIPTS
 LDAP_LDAPSCRIPTS_SERVER: ldap://localhost
