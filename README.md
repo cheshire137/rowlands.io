@@ -1,9 +1,9 @@
 # This is a work in progress - Many things are probably broke
 
+    
     docker-compose -f development.yml -p rowlandsio up
     docker-compose -f development.yml -p rowlandsio rm -f
-
-
+    
 
 # Setup instructions 
 

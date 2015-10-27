@@ -1,0 +1,10 @@
+---
+
+- template: src=etc/apache2/conf-available/phamm.conf.j2 dest=/etc/apache2/conf-available/phamm.conf owner=root group=root mode=0644
+- template: src=usr/share/phamm/config.inc.php.j2 dest=/usr/share/phamm/config.inc.php owner=www-data group=nogroup mode=0644
+
+# I'm just commenting out use of inetLocalMailRecipient here as. I filed an issue but I am not sure if this is the best
+# https://github.com/lota/phamm/issues/6
+- copy: src=usr/share/phamm/public/main.php dest=/usr/share/phamm/public/main.php owner=www-data group=nogroup mode=0644
+
+- command: a2enconf phamm

@@ -3,45 +3,49 @@ consul:
   ports:
   - "8400:8400"
   - "8500:8500"
-  - "8600:53/udp"
-  net: "host"
-  command: -bootstrap
+  - "172.17.42.1:53:8600/udp"
+  command: -bootstrap -advertise=172.17.42.1
+  hostname: consul
   mem_limit: 128m
   environment:
-  - SERVICE_NAME=consul
+  - DNS_RESOLVES=consul
+  - DNS_PORT=8600
 
 registrator:
   image: gliderlabs/registrator:latest
-  net: "host"
+  hostname: registrator
   volumes:
   - /var/run/docker.sock:/tmp/docker.sock
-  net: "host"
-  command: consul://localhost:8500
+  command: -internal consul://172.17.42.1:8500
   mem_limit: 128m
-  environment:
-  - SERVICE_NAME=registrator
 
-vault:
-  image: voxxit/vault
-  ports:
-  - "8200:8200"
-  memswap_limit: -1
-  mem_limit: 0
-  environment:
-  - SERVICE_NAME=vault
+#vault:
+#  image: voxxit/vault
+#  ports:
+#  - "8200:8200"
+#  memswap_limit: -1
+#  mem_limit: 0
+#  environment:
+#  - SERVICE_NAME=vault
 
 ldap:
   build: ldap
+  hostname: ldap
   ports:
   - "389:389"
   - "636:636"
+#  volumes_from:
+#  - ldap_data
+  dns:
+  - 172.17.42.1
+  dns_search:
+  - service.consul
   volumes:
    - ./ldap/jgrowl.configure_ldap:/etc/ansible/roles/jgrowl.configure_ldap
   mem_limit: 256m
   environment:
   - SERVICE_NAME=ldap
-  env_file: env
-
+  env_file: development.env
 
 #ldap_data:
 #  image: busybox
@@ -49,16 +53,6 @@ ldap:
 #  - /etc/ldap/slapd.d
 #  - /var/lib/ldap
 #  mem_limit: 128m
-#
-#ldap:
-#  image: osixia/openldap
-#  volumes_from:
-#  - ldap_data
-#  ports:
-#  - "389:389"
-#  - "636:636"
-#  mem_limit: 256m
-#  env_file: env
 
 synapse:
   build: matrix
@@ -66,11 +60,25 @@ synapse:
    - "8448:8448"
   volumes:
    - ./matrix/jgrowl.configure_synapse:/etc/ansible/roles/jgrowl.configure_synapse
-#  links:
-#   - redis
   environment:
   - SERVICE_NAME=synapse
-  env_file: env
+  env_file: development.env
+
+web:
+  build: web
+  hostname: web
+  ports:
+  - "80:80"
+  - "443:443"
+  dns:
+  - 172.17.42.1
+  dns_search:
+  - service.consul
+  volumes:
+   - ./web/jgrowl.configure_web:/etc/ansible/roles/jgrowl.configure_web
+  environment:
+  - SERVICE_NAME=web
+  env_file: development.env
 
 #db:
 #  image: mariadb
@@ -113,4 +121,3 @@ synapse:
 #  - "80:80"
 #  mem_limit: 1024m
 #  env_file: .env
-

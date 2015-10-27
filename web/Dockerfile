@@ -31,7 +31,7 @@ RUN apt-get install -y nodejs
 WORKDIR "/"
 RUN mkdir -p /var/local/www/html
 
-ADD etc/ansible/roles/jgrowl.configure_web /etc/ansible/roles/jgrowl.configure_web
+ADD jgrowl.configure_web /etc/ansible/roles/jgrowl.configure_web
 ADD main.yml /etc/ansible/main.yml
 
 #EXPOSE 80 443
@@ -41,4 +41,3 @@ ADD main.yml /etc/ansible/main.yml
 COPY entry.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
-

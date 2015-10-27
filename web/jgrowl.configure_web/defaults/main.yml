@@ -1,0 +1,34 @@
+---
+# defaults file for jgrowl.configure_web
+
+# To use ldapssl change to ldaps://localhost
+WEB_LDAP_HOST_NAME: "{{ lookup('env','WEB_LDAP_HOST_NAME') | default('ldap', true)}}"
+# To use ldapssl change to 636
+WEB_LDAP_LDAP_PORT: 389
+
+WEB_LDAP_TLS: 0
+
+WEB_LDAP_DOMAIN: "{{ lookup('env','WEB_LDAP_DOMAIN') | default('my-domain', true)}}"
+WEB_LDAP_TLD: "{{ lookup('env','WEB_LDAP_TLD') | default('com', true)}}"
+
+WEB_LDAP_SUFFIX: "dc={{ WEB_LDAP_DOMAIN }},dc={{ WEB_LDAP_TLD }}"
+WEB_LDAP_BINDDN: "cn=admin,{{ WEB_LDAP_SUFFIX }}"
+
+WEB_LDAP_BASE: "o=hosting,{{ WEB_LDAP_SUFFIX }}"
+
+#'dns', 'ftp', 'proxy', 'radius', 'radius_stats', 'rates', 'person', 'jabber','davical'
+WEB_PHAMM_PLUGINS: "{{ lookup('env','WEB_PHAMM_PLUGINS') | default('mail,alias', true) | split(',')}}"
+
+# Debug level [0,1]
+WEB_PHAMM_DEBUG: "{{ lookup('env','WEB_PHAMM_DEBUG') | default('0', true)}}"
+
+# PHP Error Level [0,1,2,10]
+WEB_PHAMM_ERROR_LEVEL: "{{ lookup('env','WEB_PHAMM_ERROR_LEVEL') | default('0', true)}}"
+#WEB_PHAMM_ERROR_LEVEL: 2
+
+# Log level 0->don't log [0,1,2]
+WEB_PHAMM_LOG: "{{ lookup('env','WEB_PHAMM_LOG') | default('0', true)}}"
+
+WEB_PHP_TIMEZONE: UTC
+
+
