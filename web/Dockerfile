@@ -7,6 +7,12 @@ RUN apt-get update && apt-get install -y vim ansible libldap2-dev git npm \
     && docker-php-ext-install ldap \
     && docker-php-ext-install gettext
 
+
+RUN mkdir -p /usr/share/ansible_plugins/filter_plugins/split && git clone https://github.com/timraasveld/ansible-string-split-filter.git \
+    /usr/share/ansible_plugins/filter_plugins/split
+
+RUN ln -s /usr/share/ansible_plugins/filter_plugins/split/split.py /usr/share/ansible_plugins/filter_plugins/split.py
+
 # phamm
 RUN mkdir -p /usr/share && curl -SL http://open.rhx.it/phamm/phamm-0.6.4.tar.gz | tar xvz -C /usr/share && mv /usr/share/phamm-0.6.4 /usr/share/phamm
 RUN chown www-data:nogroup -R /usr/share/phamm

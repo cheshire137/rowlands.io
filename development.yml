@@ -19,14 +19,21 @@ registrator:
   command: -internal consul://172.17.42.1:8500
   mem_limit: 128m
 
-#vault:
-#  image: voxxit/vault
-#  ports:
-#  - "8200:8200"
-#  memswap_limit: -1
-#  mem_limit: 0
-#  environment:
-#  - SERVICE_NAME=vault
+vault:
+  image: voxxit/vault
+  ports:
+  - "8200:8200"
+  memswap_limit: -1
+  mem_limit: 0
+  environment:
+  - SERVICE_NAME=vault
+
+ldap_data:
+  image: busybox
+  volumes:
+  - /etc/ldap/slapd.d
+  - /var/lib/ldap
+  mem_limit: 128m
 
 ldap:
   build: ldap
@@ -34,8 +41,8 @@ ldap:
   ports:
   - "389:389"
   - "636:636"
-#  volumes_from:
-#  - ldap_data
+  volumes_from:
+  - ldap_data
   dns:
   - 172.17.42.1
   dns_search:
@@ -46,13 +53,6 @@ ldap:
   environment:
   - SERVICE_NAME=ldap
   env_file: development.env
-
-#ldap_data:
-#  image: busybox
-#  volumes:
-#  - /etc/ldap/slapd.d
-#  - /var/lib/ldap
-#  mem_limit: 128m
 
 synapse:
   build: matrix
