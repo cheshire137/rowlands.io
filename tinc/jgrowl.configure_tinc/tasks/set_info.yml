@@ -1,0 +1,23 @@
+---
+- set_fact:
+    foo_item:
+      TINC_HOSTNAME: "{{ item }}"
+      TINC_RSA_PUBLIC_KEY: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_RSA_PUBLIC_KEY'] }}"
+      TINC_BRIDGE_NAME: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_BRIDGE_NAME'] }}"
+      TINC_OTHER_BRIDGE_ADDRESS: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_OTHER_BRIDGE_ADDRESS'] }}"
+      TINC_ADDRESS: "{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }}"
+  with_items: "{{ groups['tinc'] | reject('equalto', inventory_hostname) | list }}"
+  register: other_hosts_register
+
+- name: Set other host details
+  set_fact: TINC_OTHER_HOSTS="{{ other_hosts_register.results | map(attribute='ansible_facts.foo_item') | list }}"
+
+#- set_fact:
+#    TINC_HOST_DETAILS:
+#      TINC_HOSTNAME: "{{ item }}"
+#      TINC_RSA_PUBLIC_KEY: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_RSA_PUBLIC_KEY'] }}"
+#      TINC_BRIDGE_NAME: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_BRIDGE_NAME'] }}"
+#      TINC_OTHER_BRIDGE_ADDRESS: "{{ (hostvars[item]['TINC_NETWORKS'] | first)['TINC_OTHER_BRIDGE_ADDRESS'] }}"
+#      TINC_ADDRESS: "{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }}"
+#  with_items: hostvars[inventory_hostname]"
+#- debug: msg="{{TINC_HOST_DETAILS}}"

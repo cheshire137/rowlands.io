@@ -1,0 +1,32 @@
+---
+- block:
+    - name: check or build image
+      docker_image: path="/etc/ansible/tinc" name="jgrowl/tinc" state=build
+      delegate_to: 127.0.0.1
+      tags:
+      - development
+  when: "'docker-build' in TINC_ANSIBLE_OPTIONS"
+
+- block:
+    - name: Save image to tar
+      shell: "docker save -o /tmp/jgrowl_tinc.tar jgrowl/tinc"
+      delegate_to: 127.0.0.1
+      tags:
+      - development
+      - development_push_build
+
+    - name: copy image
+      copy: src=/tmp/jgrowl_tinc.tar dest=/tmp
+      tags:
+      - development
+      - development_push_build
+
+    - name: load image
+      command: docker load -i /tmp/jgrowl_tinc.tar
+      tags:
+      - development
+      - development_push_build
+  when: "'docker-push' in TINC_ANSIBLE_OPTIONS"
+
+
+- include: docker_deploy.yml

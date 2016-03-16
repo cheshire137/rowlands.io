@@ -1,0 +1,16 @@
+---
+# tasks file for jgrowl.configure_tinc
+
+- apt: name=bridge-utils state=present
+
+- lineinfile: dest=/etc/default/docker regexp='^DOCKER_OPTS' line='DOCKER_OPTS="--bridge={{ item.TINC_BRIDGE_NAME }}"'
+
+- command: ip link set {{ item.TINC_BRIDGE_NAME }} down
+- command: brctl delbr {{ item.TINC_BRIDGE_NAME }}
+- command: brctl addbr {{ item.TINC_BRIDGE_NAME }}
+- command: ip a add {{ item.TINC_BRIDGE_ADDRESS }} dev {{ item.TINC_BRIDGE_NAME }}
+- command: ip link set {{ item.TINC_BRIDGE_NAME }} up
+
+- command: route add -net {{ item.TINC_OTHER_BRIDGE_ADDRESS }} netmask 255.255.255.0 dev {{ item.TINC_BRIDGE_NAME }}
+  with_items: "{{ TINC_OTHER_HOSTS }}"
+

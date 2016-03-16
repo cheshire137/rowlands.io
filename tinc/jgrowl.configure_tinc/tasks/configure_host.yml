@@ -1,0 +1,51 @@
+- name: Set network name
+  set_fact:
+    TINC_NETNAME_PATH: "{{ '' if not item.TINC_NETWORK_NAME else item.TINC_NETWORK_NAME ~ '/'}}"
+
+- file: path="/etc/tinc/{{ TINC_NETNAME_PATH }}hosts" state=directory
+
+- name: Configure tinc.conf
+  template: >
+    src=tinc.conf.j2
+    dest=/etc/tinc/{{ TINC_NETNAME_PATH }}tinc.conf
+  notify:
+  - restart tinc
+
+- name: Configure host's rsa private key
+  template: >
+    src=rsa_key.priv.j2
+    dest="/etc/tinc/{{ TINC_NETNAME_PATH }}rsa_key.priv"
+    mode=600
+  notify:
+  - restart tinc
+
+- name: Configure tinc-up
+  template: >
+    src=tinc-up.j2
+    dest="/etc/tinc/{{ TINC_NETNAME_PATH }}tinc-up"
+    mode=755
+  notify:
+  - restart tinc
+
+- name: Configure tinc-down
+  template: >
+    src=tinc-down.j2
+    dest="/etc/tinc/{{ TINC_NETNAME_PATH }}tinc-down"
+    mode=755
+  notify:
+  - restart tinc
+
+- name: Configure host
+  template: >
+    src=host.j2
+    dest=/etc/tinc/{{ TINC_NETNAME_PATH }}hosts/{{ item.TINC_HOSTNAME }}
+  notify:
+  - restart tinc
+
+- name: Configure other hosts
+  template: >
+    src=host.j2
+    dest="/etc/tinc/{{ TINC_NETNAME_PATH }}hosts/{{ item.TINC_HOSTNAME }}"
+  notify:
+  - restart tinc
+  with_items: "{{ TINC_OTHER_HOSTS }}"

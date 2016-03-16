@@ -1,0 +1,3 @@
+---
+# defaults file for jgrowl.configure_tinc
+TINC_ANSIBLE_OPTIONS: ['set-info', 'setup-bridge', 'run',]

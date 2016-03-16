@@ -1,0 +1,56 @@
+---
+# tasks file for jgrowl.configure_tinc
+
+- include: set_info.yml
+
+#- debug: "{{ item | combine({'TINC_RSA_PUBLIC_KEYS': TINC_RSA_PUBLIC_KEYS}) | to_json }}"
+
+- include: set_info.yml item={{ item }}
+
+- name: Ensure old container is gone before initializing it
+  docker:
+    name: "tinc_{{ item.TINC_NETWORK_NAME }}"
+    image: jgrowl/tinc
+    state: absent
+  notify:
+  - stop tinc 0
+
+- name: Ensure new container is started
+  docker:
+    name: "tinc_{{ item.TINC_NETWORK_NAME }}"
+    image: jgrowl/tinc
+    command: "-D -d 5 -n {{ item.TINC_NETWORK_NAME }}"
+    ports:
+    - 0.0.0.0:655:655
+    cap_add:
+    - NET_ADMIN
+    devices:
+    - /dev/net/tun
+    env:
+      ANSIBLE_EXTRA_VARS: "{{ item | combine({'TINC_HOSTNAME': inventory_hostname, 'TINC_RSA_PUBLIC_KEYS': TINC_RSA_PUBLIC_KEYS}) | to_nice_json }}"
+#      restart_policy: always
+    state: started
+  notify:
+  - start tinc 0
+  - start tinc 1
+  - start tinc 2
+
+#####
+- command: service docker restart
+
+
+#  ##
+#  ###  ##########################################################################################################################################
+#  ###  # TO build on the remote host
+#  ###  ##########################################################################################################################################
+#  ###
+#  ###  - name: copy files
+#  ###    copy: src=tinc dest=/tmp
+#  ###    tags:
+#  ###    - development
+#  ###
+#  ###  - name: check or build image
+#  ###    docker_image: path="/tmp/tinc" name="jgrowl/tinc" state=build
+#  ###    tags:
+#  ###    - development
+#  ###  ##########################################################################################################################################

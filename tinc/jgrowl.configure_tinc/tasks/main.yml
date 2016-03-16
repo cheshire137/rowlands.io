@@ -1,0 +1,14 @@
+---
+# tasks file for jgrowl.configure_tinc
+
+#- include: docker.yml
+
+- apt: name=tinc state=present
+
+- include: configure_network.yml item="{{ item }}"
+  with_items: "{{ TINC_NETWORKS }}"
+
+- name: Adds networks to be started on system startup
+  template: src=nets.boot.j2 dest=/etc/tinc/nets.boot mode=644
+  notify:
+  - restart tinc

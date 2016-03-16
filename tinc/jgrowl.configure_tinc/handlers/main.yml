@@ -1,0 +1,17 @@
+---
+# handlers file for jgrowl.configure_tinc
+- name: restart tinc
+  service: name=tinc state=restarted
+
+- name: stop tinc 0
+  command: ifconfig $INTERFACE down
+
+- name: start tinc 0
+  command: ifconfig $INTERFACE 0.0.0.0
+
+- name: start tinc 1
+  command: brctl addif docker0 $INTERFACE
+
+- name: start tinc 2
+  command: ifconfig $INTERFACE up
+

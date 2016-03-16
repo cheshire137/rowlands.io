@@ -1,0 +1,4 @@
+#!/bin/sh
+ifconfig $INTERFACE 0.0.0.0
+brctl addif docker0 $INTERFACE
+ifconfig $INTERFACE up

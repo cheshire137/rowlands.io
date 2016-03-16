@@ -1,0 +1,10 @@
+{% if 'TINC_ADDRESS' in item %}
+Address = {{ item.TINC_ADDRESS }}
+{% endif %}
+
+-----BEGIN RSA PUBLIC KEY-----
+{{ item.TINC_RSA_PUBLIC_KEY | regex_replace("\\\\n", "\n") }}
+-----END RSA PUBLIC KEY-----
+
+
+{# Ed25519PublicKey = {{ network.TINC_ED25519_PUBLIC_KEY | regex_replace("\\\\n", "\n")}} #}

@@ -1,0 +1,9 @@
+Name={{ item.TINC_HOSTNAME }}
+Device={{ item.TINC_DEVICE }}
+Mode={{ item.TINC_MODE }}
+Subnet={{ item.TINC_SUBNET }}
+TCPOnly = yes
+AddressFamily = ipv4
+{% for address in item.TINC_NETWORK_CONNECT_TO %}
+ConnectTo={{ address }}
+{% endfor %}

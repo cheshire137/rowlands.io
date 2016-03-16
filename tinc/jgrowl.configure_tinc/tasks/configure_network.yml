@@ -1,0 +1,32 @@
+---
+# tasks file for jgrowl.configure_tinc
+
+- include: set_info.yml
+  when: "'set-info' in TINC_ANSIBLE_OPTIONS"
+
+- include: setup_bridge.yml
+  when: "'setup-bridge' in TINC_ANSIBLE_OPTIONS"
+
+- include: configure_host.yml
+  when: "'run' in TINC_ANSIBLE_OPTIONS"
+
+
+
+#  - name: Configure host's ed25519 private key
+#    template: >
+#      src=ed25519_key.priv.j2
+#      dest=/etc/tinc/{{ '' if not TINC_NETWORK_NAME else TINC_NETWORK_NAME ~ '/'}}ed25519_key.priv
+#      mode=600
+#- name: Generate RSA keys
+#  command: tinc {{ '' if not network_name else '-n ' ~ network_name }} generate-rsa-keys creates=/etc/tinc/rsa_key.priv
+#
+#- name: Generate ed25519 keys
+#  command: tinc {{ '' if not TINC_NETNAME else '-n ' ~ TINC_NETNAME }} generate-ed25519-keys creates=/etc/tinc/ed25519_key.priv
+#
+##  file: path=/etc/tinc/{{ '' if not network_name else network_name ~ '/'}}hosts state=directory mode=0755
+#
+##- name: Generate RSA keys
+##  command: tinc {{ '' if not network_name else '-n ' ~ network_name }} generate-rsa-keys creates=/etc/tinc/rsa_key.priv
+##
+##- name: Generate ed25519 keys
+##  command: tinc {{ '' if not TINC_NETNAME else '-n ' ~ TINC_NETNAME }} generate-ed25519-keys creates=/etc/tinc/ed25519_key.priv
