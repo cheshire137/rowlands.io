@@ -1,0 +1,22 @@
+- name: Setup docker hosts
+  hosts: setup_hosts
+  gather_facts: False
+  vars:
+    host_uid: "{{ lookup('env','HOST_UID') }}"
+    host_gid: "{{ lookup('env','HOST_GID') }}"
+
+
+  roles:
+#  - { role: jgrowl.configure_tinc, TINC_ANSIBLE_OPTIONS: ['build'] }
+
+  tasks:
+  - include: machine.yml machine="{{ item.0 | combine(item.1) }}"
+    with_subelements:
+    - "{{ server_groups }}"
+    - servers
+
+  # Setting permissions after is kinda hacky. The main goal is just to ensure that the files won't be owned
+  # by root on the controlling machine. It would be better if we could run docker-machine commands as the controlling
+  # user but I can't get it to work the way I want
+  post_tasks:
+  - include: set_permissions.yml

@@ -1,9 +1,0 @@
-server_host = {{ POSTFIX_LDAP_HOST }}
-search_base = {{ POSTFIX_LDAP_SEARCH_BASE }}
-query_filter = (&(&(objectClass=VirtualMailAccount)(mail=%s))(accountActive=TRUE)(delete=FALSE))
-result_attribute = quota
-cache = no
-bind = yes
-bind_dn = {{ POSTFIX_LDAP_BIND_DN }}
-bind_pw = {{ POSTFIX_LDAP_BIND_PW }}
-version = {{ POSTFIX_LDAP_VERSION }}

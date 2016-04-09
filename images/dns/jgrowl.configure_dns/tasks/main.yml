@@ -1,0 +1,12 @@
+---
+# tasks file for jgrowl.configure_dns
+
+#- file: path={{ DNS_INCLUDE }} state=directory owner=pdns group=pdns
+#- file: path={{ DNS_INCLUDE }} state=directory owner=root group=root
+
+- template: src=pdns.conf.j2 dest=/etc/pdns.conf owner=root group=root mode=0600
+#- template: src=pdns.local.j2 dest={{ DNS_INCLUDE }}/pdns.local owner=root group=root mode=0600
+
+
+#- template: src=pdns.conf.j2 dest=/etc/pdns.conf owner=pdns group=pdns mode=0600
+#- template: src=pdns.local.j2 dest={{ DNS_INCLUDE }}/pdns.local owner=pdns group=pdns mode=0600

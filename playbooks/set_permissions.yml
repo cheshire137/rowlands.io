@@ -1,0 +1,2 @@
+- file: path=/docker/.docker state=directory recurse=yes owner={{ host_uid }} group={{ host_gid }}
+- file: path=/docker/.ssh state=directory recurse=yes owner={{ host_uid }} group={{ host_gid }}

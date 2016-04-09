@@ -1,0 +1,4 @@
+- name: Setup tinc private networks
+  hosts: tinc
+  roles:
+  - { role: jgrowl.configure_tinc }

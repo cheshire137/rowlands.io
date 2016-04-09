@@ -1,6 +1,0 @@
-- hosts: all
-
-  roles:
-    - { role: jgrowl.configure_mail }
-
-

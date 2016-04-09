@@ -1,0 +1,12 @@
+dn: {{ LDAP_DNS_DN }}
+objectClass: top
+objectClass: organizationalUnit
+ou: dns
+description: dns zone on ldap
+
+dn: {{ LDAP_DNS_USER_DN }}
+objectClass: top
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: dnsldap
+userPassword: {{ LDAP_DNS_USER_PASSWORD_HASH }}

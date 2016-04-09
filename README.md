@@ -4,6 +4,7 @@
     docker-compose -f development.yml -p rowlandsio up
     docker-compose -f development.yml -p rowlandsio rm -f
     
+    docker build -f AnsibleDockerfile -t jgrowl/ansible .
 
 # Setup instructions 
 

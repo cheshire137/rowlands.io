@@ -1,0 +1,15 @@
+- name: Install remote ansible dependencies
+  hosts: ansible_prereqs
+  gather_facts: False
+  tasks:
+  - name: install ansible prerequisites
+    script: ansible_prereqs.sh creates=/root/.ansible_prereqs_installed
+    notify:
+    - install pip
+    - install docker-py
+  handlers:
+  - name: install pip
+    apt: name=python-pip state=present update_cache=yes
+
+  - name: install docker-py
+    pip: name=docker-py

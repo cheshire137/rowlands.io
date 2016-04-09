@@ -1,0 +1,84 @@
+- include: playbooks/create_docker_machines.yml
+- include: playbooks/ansible_prereqs.yml
+- include: playbooks/tinc.yml
+- include: playbooks/flocker.yml
+
+#
+#- name: Setup nomad
+#  hosts: nomad_server
+#  roles:
+#  - { role: jgrowl.configure_nomad }
+
+##  tasks:
+##
+###  - name: setup private tinc networks
+###    docker:
+###      name: consul_server
+###      image: gliderlabs/consul-server
+###      use_tls: encrypt  # TODO: why doesn't verify work?
+###      command: "{{ '-bootstrap' if item.name == bootstrap_machine_name else '' }}
+###                {{ '-join=' ~ bootstrap_private_ip_address if item.name != bootstrap_machine_name else '' }}
+###                -data-dir /tmp/consul
+###                -node={{ item.name }}
+###                {{ '-advertise=' ~ item.private_ip_address if item.name == bootstrap_machine_name else '' }}"
+####      restart_policy: always
+###      state: absent
+###      ports:
+###        - "{{ item.private_ip_address }}:8300:8300"
+###        - "{{ item.private_ip_address }}:8301:8301"
+###    environment:
+###     DOCKER_HOST: "{{ item.env.DOCKER_HOST }}"
+###     DOCKER_CERT_PATH: "{{ item.env.DOCKER_CERT_PATH }}"
+###     DOCKER_TLS_VERIFY: "{{ item.env.DOCKER_TLS_VERIFY }}"
+###    with_docker_machine: servers | map(attribute='name') | list
+##
+##
+##
+###  - set_fact:
+###      bootstrap_machine_name: "{{ item.name }}"
+###      bootstrap_private_ip_address: "{{ item.private_ip_address }}"
+###    with_docker_machine: "{{ servers | selectattr('bootstrap') | map(attribute='name') | first }}"
+###
+###  - name: consul servers
+###    docker:
+###      name: consul_server
+###      image: gliderlabs/consul-server
+###      use_tls: encrypt  # TODO: why doesn't verify work?
+###      command: "{{ '-bootstrap' if item.name == bootstrap_machine_name else '' }}
+###                {{ '-join=' ~ bootstrap_private_ip_address if item.name != bootstrap_machine_name else '' }}
+###                -data-dir /tmp/consul
+###                -node={{ item.name }}
+###                {{ '-advertise=' ~ item.private_ip_address if item.name == bootstrap_machine_name else '' }}"
+####      restart_policy: always
+###      state: absent
+###      ports:
+###        - "{{ item.private_ip_address }}:8300:8300"
+###        - "{{ item.private_ip_address }}:8301:8301"
+###    environment:
+###     DOCKER_HOST: "{{ item.env.DOCKER_HOST }}"
+###     DOCKER_CERT_PATH: "{{ item.env.DOCKER_CERT_PATH }}"
+###     DOCKER_TLS_VERIFY: "{{ item.env.DOCKER_TLS_VERIFY }}"
+###    with_docker_machine: servers | map(attribute='name') | list
+##
+##
+##
+###  - debug: msg="{{item}}"
+###    with_items: servers | selectattr("bootstrap") | map(attribute='name') | first
+####    with_items: servers | selectattr("bootstrap", "equalto", True) | map(attribute='name') | list
+##
+###  - name: consul servers
+###    docker:
+###      name: consul_server
+###      image: gliderlabs/consul-server
+###      use_tls: encrypt  # TODO: why doesn't verify work?
+###      command: -bootstrap-expect {{ servers | length }} -data-dir /tmp/consul -node={{ item.name }} -advertise={{ item.private_ip_address }}
+####      command: "-bootstrap-expect 1 -data-dir /tmp/consul -node=agent-one -bind=172.20.20.10 -config-dir /etc/consul.d"
+###      restart_policy: always
+###      state: absent
+###      ports:
+###        - "{{ item.private_ip_address }}:8300:8300"
+###    environment:
+###     DOCKER_HOST: "{{ item.env.DOCKER_HOST }}"
+###     DOCKER_CERT_PATH: "{{ item.env.DOCKER_CERT_PATH }}"
+###     DOCKER_TLS_VERIFY: "{{ item.env.DOCKER_TLS_VERIFY }}"
+###    with_docker_machine: servers | map(attribute='name') | list

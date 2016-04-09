@@ -1,0 +1,29 @@
+---
+
+- file: path={{ LDAP_LDIF_PATH }} state=directory
+
+- shell: /usr/sbin/slapd -h "ldap://$HOSTNAME ldaps://$HOSTNAME ldap://localhost ldaps://localhost ldapi:///" -u ldap -g ldap -d {{ LDAP_LOG_LEVEL }} 2>&1 | tee /var/log/ldap.log
+  async: 1
+  poll: 0
+
+- template: src="{{ LDAP_LDIF_SRC_PATH }}/main.ldif.j2" dest="{{ LDAP_LDIF_PATH }}/main.ldif" owner=root group=root
+- command: ldapadd -h localhost -w {{ LDAP_ROOTPW }} -D {{ LDAP_ROOTDN }} -f {{ LDAP_LDIF_PATH }}/main.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.main.ldif
+- command: touch {{ LDAP_ANSIBLE_DONE_DIR }}/.main.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.main.ldif
+
+- template: src="{{ LDAP_LDIF_SRC_PATH }}/hosting.ldif.j2" dest="{{ LDAP_LDIF_PATH }}/hosting.ldif" owner=root group=root
+- command: ldapadd -h localhost -w {{ LDAP_ROOTPW }} -D {{ LDAP_ROOTDN }} -f {{ LDAP_LDIF_PATH }}/hosting.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.hosting.ldif
+- command: touch {{ LDAP_ANSIBLE_DONE_DIR }}/.hosting.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.hosting.ldif
+
+- template: src="{{ LDAP_LDIF_SRC_PATH }}/mail.ldif.j2" dest="{{ LDAP_LDIF_PATH }}/mail.ldif" owner=root group=root
+- command: ldapadd -h localhost -w {{ LDAP_ROOTPW }} -D {{ LDAP_ROOTDN }} -f {{ LDAP_LDIF_PATH }}/mail.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.mail.ldif
+- command: touch {{ LDAP_ANSIBLE_DONE_DIR }}/.mail.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.mail.ldif
+
+- shell: slappasswd -s {{ LDAP_DNS_USER_PASSWORD }}
+  register: LDAP_DNS_USER_SLAPPASSWD_OUTPUT
+
+- set_fact:
+    LDAP_DNS_USER_PASSWORD_HASH: "{{ LDAP_DNS_USER_SLAPPASSWD_OUTPUT.stdout }}"
+
+- template: src="{{ LDAP_LDIF_SRC_PATH }}/pdns.ldif.j2" dest="{{ LDAP_LDIF_PATH }}/pdns.ldif" owner=root group=root
+- command: ldapadd -h localhost -w {{ LDAP_ROOTPW }} -D {{ LDAP_ROOTDN }} -f {{ LDAP_LDIF_PATH }}/pdns.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.pdns.ldif
+- command: touch {{ LDAP_ANSIBLE_DONE_DIR }}/.pdns.ldif creates={{ LDAP_ANSIBLE_DONE_DIR }}/.pdns.ldif

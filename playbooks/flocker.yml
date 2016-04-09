@@ -1,0 +1,4 @@
+- name: Setup flocker cli
+  hosts: flocker
+  roles:
+  - { role: jgrowl.flocker }

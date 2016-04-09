@@ -1,0 +1,38 @@
+---
+# defaults file for jgrowl.configure_dns
+
+DNS_LDAP_DOMAIN: "{{ lookup('env','DNS_LDAP_DOMAIN') | default('my-domain', true)}}"
+DNS_LDAP_TLD: "{{ lookup('env','DNS_LDAP_TLD') | default('com', true)}}"
+DNS_LDAP_BASEDN: "ou=dns,dc={{ DNS_LDAP_DOMAIN }},dc={{ DNS_LDAP_TLD }}"
+DNS_LDAP_BINDDN: "cn=dnsldap,{{ DNS_LDAP_BASEDN }}"
+DNS_LDAP_SECRET: "{{ lookup('env','DNS_LDAP_SECRET') | default('yourdnsldappasswdhere', true)}}"
+DNS_LDAP_HOST: "{{ lookup('env','DNS_LDAP_HOST') | default('ldap://ldap.service.consul:389/', true)}}"
+DNS_LDAP_METHOD: simple
+#http://www.linuxnetworks.de/doc/index.php/PowerDNS_LDAP_Backend/Installation
+
+DNS_MASTER: "yes"
+DNS_LOCAL_PORT: 53
+DNS_LOCAL_ADDRESS: 0.0.0.0
+DNS_LAUNCH: ldap
+
+DNS_GUARDIAN: "yes"
+DNS_LAZY_RECURSION: "yes"
+DNS_VERSION_STRING: PHAMM DNS
+
+#/var/spool/powerdns
+DNS_CHROOT: /var/empty
+
+#/etc/powerdns
+DNS_CONFIG_DIR: /etc
+
+#127.0.0.1, 192.168.1.0/24
+DNS_ALLOW_RECURSION: 0.0.0.0/0
+DNS_DISABLE_AXFR: "yes"
+
+#/usr/lib/powerdns
+DNS_MODULE_DIR: /usr/lib/pdns
+# 192.192.243.192
+DNS_RECURSOR: "no"
+
+# /etc/powerdns/pdns.d
+DNS_INCLUDE: /etc/pdns/pdns.d

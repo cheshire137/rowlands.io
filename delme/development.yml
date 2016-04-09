@@ -1,0 +1,139 @@
+consul:
+  image: gliderlabs/consul-server
+  ports:
+  - "8400:8400"
+  - "8500:8500"
+  - "172.17.42.1:53:8600/udp"
+  command: -bootstrap -advertise=172.17.42.1
+  hostname: consul
+  mem_limit: 128m
+  environment:
+  - DNS_RESOLVES=consul
+  - DNS_PORT=8600
+
+registrator:
+  image: gliderlabs/registrator:latest
+  hostname: registrator
+  volumes:
+  - /var/run/docker.sock:/tmp/docker.sock
+  command: -internal consul://172.17.42.1:8500
+  mem_limit: 128m
+
+vault:
+  image: voxxit/vault
+  ports:
+  - "8200:8200"
+  memswap_limit: -1
+  mem_limit: 0
+  environment:
+  - SERVICE_NAME=vault
+
+ldap_data:
+  image: busybox
+  volumes:
+  - /etc/ldap/slapd.d
+  - /var/lib/ldap
+  mem_limit: 128m
+
+ldap:
+  build: ldap
+  hostname: ldap
+  ports:
+  - "389:389"
+  - "636:636"
+  volumes_from:
+  - ldap_data
+  dns:
+  - 172.17.42.1
+  dns_search:
+  - service.consul
+  volumes:
+   - ./ldap/jgrowl.configure_ldap:/etc/ansible/roles/jgrowl.configure_ldap
+  mem_limit: 256m
+  environment:
+  - SERVICE_NAME=ldap
+  env_file: development.env
+
+dns:
+  build: dns
+  hostname: dns
+  ports:
+  - "5353:53"
+  dns:
+  - 172.17.42.1
+  dns_search:
+  - service.consul
+  volumes:
+   - ./dns/jgrowl.configure_dns:/etc/ansible/roles/jgrowl.configure_dns
+  mem_limit: 256m
+  environment:
+  - SERVICE_NAME=dns
+  env_file: development.env
+
+synapse:
+  build: matrix
+  ports:
+   - "8448:8448"
+  volumes:
+   - ./matrix/jgrowl.configure_synapse:/etc/ansible/roles/jgrowl.configure_synapse
+  environment:
+  - SERVICE_NAME=synapse
+  env_file: development.env
+
+web:
+  build: web
+  hostname: web
+  ports:
+  - "80:80"
+  - "443:443"
+  dns:
+  - 172.17.42.1
+  dns_search:
+  - service.consul
+  volumes:
+   - ./web/jgrowl.configure_web:/etc/ansible/roles/jgrowl.configure_web
+  environment:
+  - SERVICE_NAME=web
+  env_file: development.env
+
+#db:
+#  image: mariadb
+#  ports:
+#  - "3306:3306"
+#  environment:
+#  - MYSQL_ROOT_PASSWORD=my-secret-pw
+
+#ovpn_data:
+#  image: busybox
+#  volumes:
+#  - /etc/openvpn
+#
+#ovpn:
+#  image: kylemanna/openvpn
+#  volumes_from:
+#  -  ovpn_data
+#  ports:
+#  - "1194:1194/udp"
+#  cap_add:
+#  - NET_ADMIN
+#
+#mail_data:
+#  image: busybox
+#  volumes:
+#  - /var/mail
+#  - /etc/mail
+#  mem_limit: 128m
+#
+#mail:
+#  image: jgrowl/mail
+#  command: supervisord -n -c /etc/supervisor/supervisord.conf
+#  volumes_from:
+#  - mail_data
+#  ports:
+#  - "25:25"
+#  - "587:587"
+#  - "110:110"
+#  - "143:143"
+#  - "80:80"
+#  mem_limit: 1024m
+#  env_file: .env

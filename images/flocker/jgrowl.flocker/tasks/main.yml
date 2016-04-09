@@ -1,0 +1,31 @@
+---
+# tasks file for jgrowl.flocker
+
+- name: Install list of packages
+  apt: name={{item}} state=present
+  with_items:
+  - apt-transport-https
+  - software-properties-common
+
+- apt_repository: repo='deb https://clusterhq-archive.s3.amazonaws.com/ubuntu/14.04/$(ARCH) /' state=present
+
+- file: path=/etc/apt/preferences.d state=directory
+
+- copy: src=buildbot-700 dest=/etc/apt/preferences.d/buildbot-700
+
+- name: Install flocker cli
+  apt: name=clusterhq-flocker-cli update_cache=yes force=yes state=present
+
+- name: Install flocker node
+  apt: name=clusterhq-flocker-node update_cache=yes force=yes state=present
+
+- name: Install flocker docker plugin
+  apt: name=clusterhq-flocker-docker-plugin update_cache=yes force=yes state=present
+
+- file: path=/etc/flocker state=directory
+
+
+
+
+
+

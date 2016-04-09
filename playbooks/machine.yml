@@ -1,0 +1,54 @@
+- name: Ensure digitalocean machines exist
+  docker_machine_digitalocean: >
+    access_token={{ machine.access_token }}
+    name={{ machine.name }}
+    region={{ machine.region }}
+    state={{ machine.state }}
+  when: machine.type == 'digitalocean'
+
+#- name: Ensure local machines exist
+#  docker_machine_local: >
+#    name={{ item.name }}
+#  when: item.type == 'local'
+
+
+# TODO: Add in other drivers
+
+## SETUP KNOWN HOSTS!
+# I can't get the known_hosts module to work, using lineinfile instead
+
+- shell: ssh-keyscan -t ecdsa `docker-machine ip {{ machine.name }}`
+  register: known_host_entry
+
+- set_fact:
+    known_host_name: "{{ known_host_entry.stdout_lines[0].split()[0] }}"
+    known_host_type: "{{ known_host_entry.stdout_lines[0].split()[1] }}"
+    known_host_key: "{{ known_host_entry.stdout_lines[0].split()[2] }}"
+
+
+- lineinfile: dest=~/.ssh/known_hosts
+              state="{{ 'absent' if machine.state == 'absent' else 'present' }}"
+              regexp="^{{ known_host_name }}"
+              line="{{ known_host_entry.stdout_lines[0] }}"
+
+
+#- debug: msg='{{ known_host_entry.stdout_lines[0] }}'
+
+#- name: Save key in known_hosts
+#  shell: 'ssh-keyscan -t ecdsa `docker-machine ip {{ machine.name }}` >> ~/.ssh/known_hosts'
+#  when: machine.state != 'absent'
+#
+#- name: tell the host about our servers it might want to ssh to
+#  known_hosts: name='{{ known_host_name }}'
+#               key="{{ known_host_type }} {{ known_host_key }}"
+#               state="{{ 'absent' if machine.state == 'absent' else 'present' }}"
+
+
+#- name: tell the host about our servers it might want to ssh to
+#  known_hosts: path=/docker/.ssh/known_hosts
+#               name='{{ known_host_name }}'
+#               key="/docker/.docker/machines/{{ machine.name }}/id_rsa.pub"
+#               state=present
+
+#               key="/docker/.docker/machines/{{ machine.name }}/id_rsa.pub"
+#               state="{{ 'absent' if machine.state == 'absent' else 'present' }}"
