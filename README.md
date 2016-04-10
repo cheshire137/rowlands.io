@@ -1,12 +1,13 @@
 # This is a work in progress - Many things are probably broke
 
-    
+**[See the documentation](docs/README.md)**
+
     docker-compose -f development.yml -p rowlandsio up
     docker-compose -f development.yml -p rowlandsio rm -f
-    
+
     docker build -f AnsibleDockerfile -t jgrowl/ansible .
 
-# Setup instructions 
+# Setup instructions
 
 
 ## Obtain a docker host and source docker environment variables
@@ -16,21 +17,21 @@
     export DO_ACCESS_TOKEN=<API TOKEN>
     docker-machine create --driver digitalocean --digitalocean-access-token $DO_ACCESS_TOKEN mail
     eval "$(docker-machine env mail)"
-    
-## Copy the env template and edit with your own variables 
+
+## Copy the env template and edit with your own variables
 
 `cp env.template env`
-    
+
 ## Bring up your new mail server
 
 `docker-compose -p examplecom up -d`
-    
+
 ## Setup postfixadmin
 
 `http://mail.example.com/postfixadmin/setup.php`
-    
+
 ## Setup rainloop
-    
+
 `http://mail.example.com/?admin`
 
 ## Setup your DNS records
@@ -42,7 +43,7 @@
 `docker exec examplecom_mail_1 cat /etc/mail/mail.txt`
 
 # Debug any issues
-    
+
 `docker exec -it examplecom_mail_1 bash`
 
 # Development instructions
@@ -59,7 +60,7 @@
 - /usr/lib/courier/pop3d.pem
 - /usr/lib/courier/imapd.pem
 
-# Matrix 
+# Matrix
 docker run -v /tmp/data:/data --rm -e SERVER_NAME=mail.rowlands.io silviof/docker-matrix generate
 docker run -d -p 8448:8448 -p 3478:3478 -v /tmp/data:/data silviof/docker-matrix start
 
